@@ -11,17 +11,18 @@ import sys
 if __name__ == "__main__":
     employee_id = sys.argv[1]
 
-    user_url = "https://jsonplaceholder.typicode.com/users/{}".format(employee_id)
-    todo_url = "https://jsonplaceholder.typicode.com/todos?userId={}".format(employee_id)
+    base_url = "https://jsonplaceholder.typicode.com"
+    user_url = "{}/users/{}".format(base_url, employee_id)
+    todo_url = "{}/todos?userId={}".format(base_url, employee_id)
 
     user = requests.get(user_url).json()
     todos = requests.get(todo_url).json()
 
     username = user.get("username")
 
-    with open("{}.csv".format(employee_id), "w", newline="") as f:
+    filename = "{}.csv".format(employee_id)
+    with open(filename, "w", newline="") as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
-
         for task in todos:
             writer.writerow([
                 employee_id,
@@ -29,3 +30,4 @@ if __name__ == "__main__":
                 task.get("completed"),
                 task.get("title")
             ])
+
