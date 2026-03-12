@@ -33,7 +33,7 @@ def main():
     users = response.json()
 
     data = {
-        user["id"]: [
+        str(user["id"]): [
             {
                 "task": todo["title"],
                 "completed": todo["completed"],
