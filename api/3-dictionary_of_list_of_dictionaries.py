@@ -1,50 +1,26 @@
 #!/usr/bin/python3
-"""
-fgbvd
-"""
+"""Exports all employees TODO list to JSON."""
 import json
 import requests
-from sys import argv
-
-
-def get_info(url):
-    """
-    sfgbgvfds
-    """
-    data = requests.get(url)
-    return data.json()
-
-
-def get_user_todos(user_id):
-    """
-    Get the TODO list for a given user ID
-    """
-    url = "https://jsonplaceholder.typicode.com/todos"
-    response = requests.get(url, params={"userId": user_id})
-    return response.json()
-
-
-def main():
-    """
-    fgbjfnd
-    """
-    url = "https://jsonplaceholder.typicode.com/users"
-    response = requests.get(url)
-    users = response.json()
-
-    data = {
-        str(user["id"]): [
-            {
-                "task": todo["title"],
-                "completed": todo["completed"],
-                "username": user["username"]
-            } for todo in get_user_todos(user["id"])
-        ] for user in users
-    }
-
-    with open("todo_all_employees.json", "w") as jsonfile:
-        json.dump(data, jsonfile)
 
 
 if __name__ == "__main__":
-    main()
+    base_url = "https://jsonplaceholder.typicode.com"
+    users = requests.get("{}/users".format(base_url)).json()
+    todos = requests.get("{}/todos".format(base_url)).json()
+    data = {}
+    for user in users:
+        user_id = str(user.get("id"))
+        username = user.get("username")
+        tasks = []
+        for task in todos:
+            if str(task.get("userId")) == user_id:
+                tasks.append({
+                    "username": username,
+                    "task": task.get("title"),
+                    "completed": task.get("completed")
+                })
+        data[user_id] = tasks
+    with open("todo_all_employees.json", "w") as f:
+        # json.dump(data, f)
+        json.dump(data, f, indent=4, sort_keys=True)
