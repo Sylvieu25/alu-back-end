@@ -43,7 +43,7 @@ def main():
     }
 
     with open("todo_all_employees.json", "w") as jsonfile:
-        json.dump(data, jsonfile, indent=4, sort_keys=True)
+        json.dump(data, jsonfile, sort_keys=True)
 
 
 if __name__ == "__main__":
