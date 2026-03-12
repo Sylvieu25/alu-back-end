@@ -6,7 +6,8 @@ import requests
 
 if __name__ == "__main__":
     base_url = "https://jsonplaceholder.typicode.com"
-    users = requests.get("{}/users".format(base_url)).json()
+    users = requests.get("{}/users".format(base_url)).json() 
+    users.raise_for_status()
     todos = requests.get("{}/todos".format(base_url)).json()
     data = {}
     for user in users:
