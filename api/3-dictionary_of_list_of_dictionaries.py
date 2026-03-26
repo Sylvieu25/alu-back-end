@@ -1,25 +1,43 @@
 #!/usr/bin/python3
-"""Exports all employees TODO list to JSON."""
+"""
+3-dictionary_of_list_of_dictionaries.py
+
+Exports all TODO tasks for all employees to a single JSON file.
+"""
+
 import json
 import requests
 
 
 if __name__ == "__main__":
-    base_url = "https://jsonplaceholder.typicode.com"
-    users = requests.get("{}/users".format(base_url)).json()
-    todos = requests.get("{}/todos".format(base_url)).json()
-    data = {}
+    users_url = "https://jsonplaceholder.typicode.com/users"
+    todos_url = "https://jsonplaceholder.typicode.com/todos"
+
+    users_response = requests.get(users_url)
+    todos_response = requests.get(todos_url)
+
+    users = users_response.json()
+    todos = todos_response.json()
+
+    usernames_by_id = {}
+    for user in users:
+        usernames_by_id[user.get("id")] = user.get("username")
+
+    output = {}
     for user in users:
         user_id = str(user.get("id"))
-        username = user.get("username")
-        tasks = []
-        for task in todos:
-            if str(task.get("userId")) == user_id:
-                tasks.append({
-                    "username": username,
-                    "task": task.get("title"),
-                    "completed": task.get("completed")
-                })
-        data[user_id] = tasks
-    with open("todo_all_employees.json", "w") as f:
-        json.dump(data, f)
+        output[user_id] = []
+
+    for task in todos:
+        user_id_int = task.get("userId")
+        user_id = str(user_id_int)
+        output[user_id].append(
+            {
+                "username": usernames_by_id.get(user_id_int),
+                "task": task.get("title"),
+                "completed": task.get("completed")
+            }
+        )
+
+    with open("todo_all_employees.json", "w", encoding="utf-8") as json_file:
+        json.dump(output, json_file)
