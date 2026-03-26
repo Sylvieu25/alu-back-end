@@ -1,4 +1,3 @@
-cat > 0-gather_data_from_an_API.py << 'EOF'
 #!/usr/bin/python3
 """Script that returns information about an employee TODO list progress."""
 import requests
